@@ -4,11 +4,10 @@ import com.alphasystem.diff._
 
 import scala.util.control.Breaks._
 
-class GreedyDiff(source: Array[Line], target: Array[Line]) {
+class GreedyDiff(source: Array[Line], target: Array[Line]) extends Diff {
 
-  private var snakes: List[Snake] = Nil
-
-  def shortestEditPath: List[Snake] = {
+  override private[diff] def walkSnakes = {
+    var snakes = List.empty[Snake]
     val n = source.length
     val m = target.length
     val max = n + m
@@ -54,13 +53,7 @@ class GreedyDiff(source: Array[Line], target: Array[Line]) {
         } // end of inner for loop
       } // end of outer for loop
     } // end of breakable
-    snakes = backtrack(snakes, Nil, None)
-    snakes
-  }
-
-  def lcs: List[Snake] = {
-    if (snakes.isEmpty) shortestEditPath
-    snakes.filter(_.operationType == OperationType.Matched)
+    backtrack(snakes, Nil, None)
   }
 
   /*

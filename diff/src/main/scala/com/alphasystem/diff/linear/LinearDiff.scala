@@ -1,7 +1,6 @@
 package com.alphasystem.diff.linear
 
 import com.alphasystem.diff._
-import org.slf4j.LoggerFactory
 
 import scala.util.control.Breaks._
 
@@ -13,30 +12,16 @@ import scala.util.control.Breaks._
  * @param source source array
  * @param target target array
  */
-class LinearDiff(source: Array[Line], target: Array[Line]) {
+class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
 
-  private val log = LoggerFactory.getLogger(getClass)
+  override private[diff] def walkSnakes: List[Snake] = walkSnakes(findPaths)
 
-  private var snakes = List.empty[Snake]
+  private[diff] def findPaths: List[Point] = findPath(0, 0, source.length, target.length)
 
-  def shortestEditPath: List[Snake] = {
-    snakes = walkSnakes(findPaths)
-    snakes
-  }
-
-  def lcs: List[Snake] = {
-    if (snakes.isEmpty) shortestEditPath
-    snakes.filter(_.operationType == OperationType.Matched)
-  }
-
-  private[diff] def findPaths: List[Point] = {
-    findPathInternal(0, 0, source.length, target.length)
-  }
-
-  private def findPathInternal(left: Int,
-                               top: Int,
-                               right: Int,
-                               bottom: Int): List[Point] = {
+  private def findPath(left: Int,
+                       top: Int,
+                       right: Int,
+                       bottom: Int): List[Point] = {
     val box = Box(left, top, right, bottom)
     val maybeMiddleSnake = findMiddleSnake(box)
     if (maybeMiddleSnake.isDefined) {
@@ -44,8 +29,8 @@ class LinearDiff(source: Array[Line], target: Array[Line]) {
       val start = middleSnake.start
       val end = middleSnake.end
 
-      val forwards = findPathInternal(box.left, box.top, start.x, start.y)
-      val reverses = findPathInternal(end.x, end.y, box.right, box.bottom)
+      val forwards = findPath(box.left, box.top, start.x, start.y)
+      val reverses = findPath(end.x, end.y, box.right, box.bottom)
 
       val ls1 =
         forwards match {
@@ -211,7 +196,6 @@ class LinearDiff(source: Array[Line], target: Array[Line]) {
     if (point != end) ls :+= point // do not include the end, it will be part of next iteration
     ls
   }
-
 }
 
 object LinearDiff {
