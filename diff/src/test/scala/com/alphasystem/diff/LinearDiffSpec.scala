@@ -81,5 +81,11 @@ class LinearDiffSpec
     LinearDiff(s1, s2).lcs.map(_.line.text).mkString("") shouldBe lcs
   }
 
+  it should "have valid solution" in {
+    val source = readLines("/example1.txt")
+    val target = readLines("/example2.txt")
+    LinearDiff(source, target).validate shouldBe true
+  }
+
   private def mapSnakeToPoints(snakes: List[Snake]): List[Point] = snakes.map(snake => snake.start)
 }
