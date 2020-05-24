@@ -15,4 +15,12 @@ def createProject(projectId: String, _moduleName: String, additionalSettings: sb
       moduleName := _moduleName
     )
     .settings(additionalSettings: _*)
+    .enablePlugins(JavaAppPackaging)
+}
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
 }
