@@ -17,9 +17,7 @@ abstract class LinearDiff[T] private[diff](private[diff] override val source: Ar
                                            private[diff] override val target: Array[Line[T]])
   extends Diff[T] {
 
-  override private[diff] def walkSnakes: List[Snake[T]] = walkSnakes(findPaths)
-
-  private[diff] def findPaths: List[Point] = findPath(0, 0, source.length, target.length)
+  private[diff] override def findPaths: List[Point] = findPath(0, 0, source.length, target.length)
 
   private def findPath(left: Int,
                        top: Int,
@@ -121,7 +119,7 @@ abstract class LinearDiff[T] private[diff](private[diff] override val source: Ar
     result
   }
 
-  private[diff] def walkSnakes(paths: List[Point]) =
+  private[diff] override def walkSnakes(paths: List[Point]): List[Snake[T]] =
     paths
       .sliding(2)
       .foldLeft(List[Snake[T]]()) {

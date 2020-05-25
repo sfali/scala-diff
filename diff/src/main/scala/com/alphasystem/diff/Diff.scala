@@ -11,7 +11,9 @@ trait Diff[T] {
 
   private var snakes: List[Snake[T]] = List.empty[Snake[T]]
 
-  private[diff] def walkSnakes: List[Snake[T]]
+  private[diff] def findPaths: List[Point]
+
+  private[diff] def walkSnakes(paths: List[Point]): List[Snake[T]]
 
   private[diff] def compareLines(sourceIndex: Int, targetIndex: Int): Boolean =
     source(sourceIndex).text == target(targetIndex).text
@@ -22,7 +24,7 @@ trait Diff[T] {
    * @return A list of [[Snake]]s containing the shortest edit path
    */
   def shortestEditPath: List[Snake[T]] = {
-    snakes = walkSnakes
+    snakes = walkSnakes(findPaths)
     snakes
   }
 

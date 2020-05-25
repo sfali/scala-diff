@@ -8,7 +8,7 @@ abstract class GreedyDiff[T] private[diff](private[diff] override val source: Ar
                                            private[diff] override val target: Array[Line[T]])
   extends Diff[T] {
 
-  private def findPaths: List[Point] = {
+  private[diff] override def findPaths: List[Point] = {
     var paths: List[Point] = Nil
     val n = source.length
     val m = target.length
@@ -52,7 +52,8 @@ abstract class GreedyDiff[T] private[diff](private[diff] override val source: Ar
     paths
   }
 
-  override private[diff] def walkSnakes: List[Snake[T]] = walkSnakesInternal(findPaths.sliding(2, 2).toList, Nil, None)
+  private[diff] override def walkSnakes(paths: List[Point]): List[Snake[T]] =
+    walkSnakesInternal(paths.sliding(2, 2).toList, Nil, None)
 
   @scala.annotation.tailrec
   private def walkSnakesInternal(paths: List[List[Point]],
