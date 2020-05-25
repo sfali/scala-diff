@@ -1,6 +1,6 @@
 package com.alphasystem.diff
 
-case class Snake(start: Point,
+case class Snake[T](start: Point,
                  end: Point,
-                 line: Line,
+                 line: Line[T],
                  operationType: OperationType)

@@ -11,10 +11,13 @@ import scala.util.control.Breaks._
  *
  * @param source source array
  * @param target target array
+ * @tparam T type of source and target objects
  */
-class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
+class LinearDiff[T] private(private[diff] override val source: Array[Line[T]],
+                            private[diff] override val target: Array[Line[T]])
+  extends Diff[T] {
 
-  override private[diff] def walkSnakes: List[Snake] = walkSnakes(findPaths)
+  override private[diff] def walkSnakes: List[Snake[T]] = walkSnakes(findPaths)
 
   private[diff] def findPaths: List[Point] = findPath(0, 0, source.length, target.length)
 
@@ -69,7 +72,7 @@ class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
             var yEnd = box.top + (xEnd - box.left) - k
             val yStart = if (d == 0 || xStart != xEnd) yEnd else yEnd - 1
 
-            while (xEnd < box.right && yEnd < box.bottom && source(xEnd).text == target(yEnd).text) {
+            while (xEnd < box.right && yEnd < box.bottom && compareLines(xEnd, yEnd)) {
               xEnd += 1
               yEnd += 1
             }
@@ -93,7 +96,7 @@ class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
             var xEnd = box.left + (yEnd - box.top) + k
             val xStart = if (d == 0 || yEnd != yStart) xEnd else xEnd + 1
 
-            while (xEnd > box.left & yEnd > box.top && source(xEnd - 1).text == target(yEnd - 1).text) {
+            while (xEnd > box.left & yEnd > box.top && compareLines(xEnd - 1, yEnd - 1)) {
               xEnd -= 1
               yEnd -= 1
             }
@@ -121,11 +124,11 @@ class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
   private[diff] def walkSnakes(paths: List[Point]) =
     paths
       .sliding(2)
-      .foldLeft(List[Snake]()) {
+      .foldLeft(List[Snake[T]]()) {
         (result, input) => result ::: walkSnake(input.head, input.last)
       }
 
-  private[diff] def walkSnake(start: Point, end: Point): List[Snake] = {
+  private[diff] def walkSnake(start: Point, end: Point): List[Snake[T]] = {
     // start and end point could be a single rightward (for forward direction) step or a single leftward (for reverse
     // direction), in either case start.x + 1 == end.x and start.y == end.y, this indicate deletion
 
@@ -175,7 +178,7 @@ class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
     result = if (singleUpOrDownStep) result else result ::: walkDiagonal(Point(x, y), end)
     (result :+ end)
       .sliding(2)
-      .foldLeft(List.empty[Snake]) {
+      .foldLeft(List.empty[Snake[T]]) {
         (result, input) =>
           val start = input.head
           val end = input.last
@@ -187,7 +190,7 @@ class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
     var ls = List.empty[Point]
     var x = start.x
     var y = start.y
-    while (x < end.x && y < end.y && source(x).text == target(y).text) {
+    while (x < end.x && y < end.y && compareLines(x, y)) {
       ls :+= Point(x, y)
       x += 1
       y += 1
@@ -199,9 +202,12 @@ class LinearDiff(source: Array[Line], target: Array[Line]) extends Diff {
 }
 
 object LinearDiff {
-  def apply(source: Array[Line], target: Array[Line]): LinearDiff = new LinearDiff(source, target)
+  def apply(source: Array[Line[String]], target: Array[Line[String]]): LinearDiff[String] =
+    new LinearDiff(source, target)
 
-  def apply(source: Array[String], target: Array[String]): LinearDiff = new LinearDiff(toLine(source), toLine(target))
+  def apply(source: Array[String], target: Array[String]): LinearDiff[String] =
+    new LinearDiff(toLine(source), toLine(target))
 
-  def apply(source: String, target: String): LinearDiff = new LinearDiff(toStringArray(source), toStringArray(target))
+  def apply(source: String, target: String): LinearDiff[String] =
+    new LinearDiff(toStringArray(source), toStringArray(target))
 }

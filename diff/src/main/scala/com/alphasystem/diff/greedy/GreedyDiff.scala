@@ -4,10 +4,12 @@ import com.alphasystem.diff._
 
 import scala.util.control.Breaks._
 
-class GreedyDiff(source: Array[Line], target: Array[Line]) extends Diff {
+class GreedyDiff[T] private(private[diff] override val source: Array[Line[T]],
+                            private[diff] override val target: Array[Line[T]])
+  extends Diff[T] {
 
   override private[diff] def walkSnakes = {
-    var snakes = List.empty[Snake]
+    var snakes = List.empty[Snake[T]]
     val n = source.length
     val m = target.length
     val max = n + m
@@ -29,7 +31,7 @@ class GreedyDiff(source: Array[Line], target: Array[Line]) extends Diff {
           var xEnd = if (down) xStart else xStart + 1
           var yEnd = xEnd - k
 
-          while (xEnd < n && yEnd < m && source(xEnd).text == target(yEnd).text) {
+          while (xEnd < n && yEnd < m && compareLines(xEnd, yEnd)) {
             val maybeSnake = createSnake(xStart, yStart, xEnd, yEnd, source, target)
             if (maybeSnake.isDefined) {
               snakes +:= maybeSnake.get
@@ -60,7 +62,7 @@ class GreedyDiff(source: Array[Line], target: Array[Line]) extends Diff {
  * Results are backward, start from bottom and go up
  */
   @scala.annotation.tailrec
-  private def backtrack(source: List[Snake], result: List[Snake], maybePrev: Option[Snake]): List[Snake] =
+  private def backtrack(source: List[Snake[T]], result: List[Snake[T]], maybePrev: Option[Snake[T]]): List[Snake[T]] =
     source match {
       case Nil => result
       case head :: tail =>
@@ -81,9 +83,12 @@ class GreedyDiff(source: Array[Line], target: Array[Line]) extends Diff {
 }
 
 object GreedyDiff {
-  def apply(source: Array[Line], target: Array[Line]): GreedyDiff = new GreedyDiff(source, target)
+  def apply(source: Array[Line[String]], target: Array[Line[String]]): GreedyDiff[String] =
+    new GreedyDiff(source, target)
 
-  def apply(source: Array[String], target: Array[String]): GreedyDiff = new GreedyDiff(toLine(source), toLine(target))
+  def apply(source: Array[String], target: Array[String]): GreedyDiff[String] =
+    new GreedyDiff(toLine(source), toLine(target))
 
-  def apply(source: String, target: String): GreedyDiff = new GreedyDiff(toStringArray(source), toStringArray(target))
+  def apply(source: String, target: String): GreedyDiff[String] =
+    new GreedyDiff(toStringArray(source), toStringArray(target))
 }

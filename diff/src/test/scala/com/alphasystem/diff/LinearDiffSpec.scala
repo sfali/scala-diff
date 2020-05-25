@@ -87,5 +87,5 @@ class LinearDiffSpec
     LinearDiff(source, target).validate shouldBe true
   }
 
-  private def mapSnakeToPoints(snakes: List[Snake]): List[Point] = snakes.map(snake => snake.start)
+  private def mapSnakeToPoints[T](snakes: List[Snake[T]]): List[Point] = snakes.map(snake => snake.start)
 }
