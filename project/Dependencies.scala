@@ -11,6 +11,7 @@ object Dependencies {
   private val ScalatestVersion = "3.3.0-SNAP2"
   private val ScalacheckVersion = "1.14.3"
   private val LogbackVersion = "1.2.3"
+  private val ScoptVersion = "4.0.0-RC2"
   private val ComTypesafeAkka = "com.typesafe.akka"
   private val ComLightbendAkka = "com.lightbend.akka"
   private val IoCirce = "io.circe"
@@ -18,6 +19,7 @@ object Dependencies {
   private val OrgScalatest = "org.scalatest"
   private val OrgScalacheck = "org.scalacheck"
   private val ChQosLogback = "ch.qos.logback"
+  private val ComGithubScopt = "com.github.scopt"
 
   val Common = Seq(
     // These libraries are added to all modules via the `Common` AutoPlugin
@@ -40,7 +42,8 @@ object Dependencies {
       ComLightbendAkka    %% "akka-stream-alpakka-csv"    % AlpakkaVersion
         excludeAll ExclusionRule(organization = ComTypesafeAkka),
       ComLightbendAkka    %% "akka-stream-alpakka-file"   % AlpakkaVersion
-        excludeAll ExclusionRule(organization = ComTypesafeAkka)
+        excludeAll ExclusionRule(organization = ComTypesafeAkka),
+      ComGithubScopt      %% "scopt"                      % ScoptVersion
     )
   )
 }
