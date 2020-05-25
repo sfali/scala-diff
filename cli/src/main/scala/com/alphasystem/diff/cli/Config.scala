@@ -2,6 +2,8 @@ package com.alphasystem.diff.cli
 
 import java.nio.file.Path
 
+import com.alphasystem.diff.client.Operation
+
 case class Config(sourceFile: Option[Path] = None,
                   targetFile: Option[Path] = None,
                   outFile: Option[Path] = None,

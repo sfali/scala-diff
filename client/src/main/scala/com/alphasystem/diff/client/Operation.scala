@@ -1,4 +1,4 @@
-package com.alphasystem.diff.cli
+package com.alphasystem.diff.client
 
 import enumeratum.{CirceEnum, Enum, EnumEntry}
 
