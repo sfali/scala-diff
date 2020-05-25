@@ -35,14 +35,19 @@ object Dependencies {
     )
   )
 
-  val Cli = Seq(
+  val Client = Seq(
     libraryDependencies ++= Seq(
       ComTypesafeAkka     %% "akka-actor-typed"           % AkkaVersion,
       ComTypesafeAkka     %% "akka-stream-typed"          % AkkaVersion,
       ComLightbendAkka    %% "akka-stream-alpakka-csv"    % AlpakkaVersion
         excludeAll ExclusionRule(organization = ComTypesafeAkka),
       ComLightbendAkka    %% "akka-stream-alpakka-file"   % AlpakkaVersion
-        excludeAll ExclusionRule(organization = ComTypesafeAkka),
+        excludeAll ExclusionRule(organization = ComTypesafeAkka)
+    )
+  )
+
+  val Cli = Seq(
+    libraryDependencies ++= Seq(
       ComGithubScopt      %% "scopt"                      % ScoptVersion
     )
   )

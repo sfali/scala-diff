@@ -2,11 +2,15 @@ import Dependencies._
 
 lazy val diff = createProject("diff", "diff")
 
-lazy val cli = createProject("cli", "cli", Cli)
+lazy val client = createProject("client", "client", Client)
   .aggregate(diff)
   .dependsOn(diff)
 
-lazy val modules: Seq[ProjectReference] = Seq(diff, cli)
+lazy val cli = createProject("cli", "cli", Cli)
+  .aggregate(client)
+  .dependsOn(client)
+
+lazy val modules: Seq[ProjectReference] = Seq(diff, client, cli)
 
 lazy val `scala-diff` = project
   .in(file("."))

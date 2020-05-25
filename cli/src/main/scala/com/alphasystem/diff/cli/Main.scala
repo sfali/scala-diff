@@ -3,8 +3,9 @@ package com.alphasystem.diff.cli
 import java.io.File
 
 import akka.actor.ActorSystem
-import scopt.{OParser, Read}
 import com.alphasystem.diff._
+import com.alphasystem.diff.client._
+import scopt.{OParser, Read}
 
 object Main {
 
