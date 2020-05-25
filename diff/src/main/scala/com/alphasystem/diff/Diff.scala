@@ -1,14 +1,15 @@
 package com.alphasystem.diff
 
+import java.time.Duration
+
 import org.slf4j.{Logger, LoggerFactory}
 
 trait Diff[T] {
 
   protected val log: Logger = LoggerFactory.getLogger(getClass)
-
+  private val logTimeConsumed: Boolean = java.lang.Boolean.getBoolean("scala-diff.log-time-consumed")
   private[diff] val source: Array[Line[T]]
   private[diff] val target: Array[Line[T]]
-
   private var snakes: List[Snake[T]] = List.empty[Snake[T]]
 
   private[diff] def findPaths: List[Point]
@@ -24,7 +25,12 @@ trait Diff[T] {
    * @return A list of [[Snake]]s containing the shortest edit path
    */
   def shortestEditPath: List[Snake[T]] = {
-    snakes = walkSnakes(findPaths)
+    time("FindPaths") {
+      val paths = findPaths
+      time("WalkSnakes") {
+        snakes = walkSnakes(paths)
+      }
+    }
     snakes
   }
 
@@ -56,6 +62,15 @@ trait Diff[T] {
     val down = start.x == end.x && start.y + 1 == end.y
     val diagonal = start.x + 1 == end.x && start.y + 1 == end.y
     right || down || diagonal
+  }
+
+  private def time[R](description: String)(block: => R): R = {
+    val start = System.nanoTime()
+    val result = block
+    val timeElapsed = Duration.ofNanos(System.nanoTime() - start)
+    if (logTimeConsumed)
+      log.info(s"${getClass.getSimpleName}: time taken to run '$description' = $timeElapsed", timeElapsed)
+    result
   }
 
 }

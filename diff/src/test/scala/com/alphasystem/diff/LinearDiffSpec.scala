@@ -11,6 +11,8 @@ class LinearDiffSpec
   extends AnyFlatSpec
     with Matchers {
 
+  System.setProperty("scala-diff.log-time-consumed", "true")
+
   it should "find middle snake" in {
     val source = readLines("/example1.txt")
     val target = readLines("/example2.txt")
