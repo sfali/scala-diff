@@ -87,5 +87,23 @@ class LinearDiffSpec
     LinearDiff(source, target).validate shouldBe true
   }
 
-  private def mapSnakeToPoints[T](snakes: List[Snake[T]]): List[Point] = snakes.map(snake => snake.start)
+  it should "perform full comparison in Map based diff" in {
+    val source = readCsv("/example1.csv", CsvHeaders)
+    val target = readCsv("/example3.csv", CsvHeaders)
+    val diff = LinearDiff(source, target, CsvHeaders, CsvHeaders)
+    diff.lcs.map(_.line.text("Last name")) shouldBe "Alfalfa" :: "Backus" :: "Bumpkin" :: "Franklin" :: "Gerty" :: Nil
+  }
+
+  it should "perform partial comparison in Map based diff" in {
+    val source = readCsv("/example2.csv", CsvHeaders)
+    val target = readCsv("/example3.csv", CsvHeaders)
+    val diff = LinearDiff(source, target, CsvHeaders.take(1), CsvHeaders, CsvHeaders.take(1))
+    diff.lcs.map {
+      snake =>
+        val map = snake.line.text
+        s"${map("First name")} ${map("Last name")}"
+    } shouldBe "Andrew Airpump" :: "Aloysius Alfalfa" :: "Benny Franklin" :: "Cecil Noshow" :: Nil
+  }
+
+  private def mapSnakeToPoints[T](snakes: List[Snake[T]]): List[Point] = snakes.map(_.start)
 }

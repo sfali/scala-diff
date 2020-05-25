@@ -48,4 +48,22 @@ class GreedyDiffSpec
       (6, Matched) :: (7, Insertion) :: (8, Insertion) :: (9, Insertion) :: (10, Insertion) :: (11, Matched) :: Nil
     result shouldBe expectedResult
   }
+
+  it should "perform full comparison in Map based diff" in {
+    val source = readCsv("/example1.csv", CsvHeaders)
+    val target = readCsv("/example3.csv", CsvHeaders)
+    val diff = GreedyDiff(source, target, CsvHeaders, CsvHeaders)
+    diff.lcs.map(_.line.text("Last name")) shouldBe "Alfalfa" :: "Backus" :: "Bumpkin" :: "Franklin" :: "Gerty" :: Nil
+  }
+
+  it should "perform partial comparison in Map based diff" in {
+    val source = readCsv("/example2.csv", CsvHeaders)
+    val target = readCsv("/example3.csv", CsvHeaders)
+    val diff = GreedyDiff(source, target, CsvHeaders.take(1), CsvHeaders, CsvHeaders.take(1))
+    diff.lcs.map {
+      snake =>
+        val map = snake.line.text
+        s"${map("First name")} ${map("Last name")}"
+    } shouldBe "Andrew Airpump" :: "Aloysius Alfalfa" :: "Benny Franklin" :: "Cecil Noshow" :: Nil
+  }
 }

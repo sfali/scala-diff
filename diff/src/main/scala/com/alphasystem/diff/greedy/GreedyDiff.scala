@@ -4,8 +4,8 @@ import com.alphasystem.diff._
 
 import scala.util.control.Breaks._
 
-class GreedyDiff[T] private(private[diff] override val source: Array[Line[T]],
-                            private[diff] override val target: Array[Line[T]])
+abstract class GreedyDiff[T] private[diff](private[diff] override val source: Array[Line[T]],
+                                           private[diff] override val target: Array[Line[T]])
   extends Diff[T] {
 
   override private[diff] def walkSnakes = {
@@ -82,13 +82,31 @@ class GreedyDiff[T] private(private[diff] override val source: Array[Line[T]],
 
 }
 
+private class DefaultGreedyDiff(source: Array[Line[String]], target: Array[Line[String]])
+  extends GreedyDiff[String](source, target)
+
+private class MapBasedGreedyDiff(source: Array[Line[Map[String, String]]],
+                                 target: Array[Line[Map[String, String]]],
+                                 override private[diff] val sourceHeaders: List[String] = Nil,
+                                 override private[diff] val targetHeaders: List[String] = Nil,
+                                 override private[diff] val headersToCompare: List[String] = Nil)
+  extends GreedyDiff[Map[String, String]](source, target)
+    with MapBasedDiff
+
 object GreedyDiff {
   def apply(source: Array[Line[String]], target: Array[Line[String]]): GreedyDiff[String] =
-    new GreedyDiff(source, target)
+    new DefaultGreedyDiff(source, target)
 
   def apply(source: Array[String], target: Array[String]): GreedyDiff[String] =
-    new GreedyDiff(toLine(source), toLine(target))
+    new DefaultGreedyDiff(toLine(source), toLine(target))
 
   def apply(source: String, target: String): GreedyDiff[String] =
-    new GreedyDiff(toStringArray(source), toStringArray(target))
+    new DefaultGreedyDiff(toStringArray(source), toStringArray(target))
+
+  def apply(source: Array[Line[Map[String, String]]],
+            target: Array[Line[Map[String, String]]],
+            sourceHeaders: List[String] = Nil,
+            targetHeaders: List[String] = Nil,
+            headersToCompare: List[String] = Nil): GreedyDiff[Map[String, String]] =
+    new MapBasedGreedyDiff(source, target, sourceHeaders, targetHeaders, headersToCompare)
 }

@@ -13,8 +13,8 @@ import scala.util.control.Breaks._
  * @param target target array
  * @tparam T type of source and target objects
  */
-class LinearDiff[T] private(private[diff] override val source: Array[Line[T]],
-                            private[diff] override val target: Array[Line[T]])
+abstract class LinearDiff[T] private[diff](private[diff] override val source: Array[Line[T]],
+                                           private[diff] override val target: Array[Line[T]])
   extends Diff[T] {
 
   override private[diff] def walkSnakes: List[Snake[T]] = walkSnakes(findPaths)
@@ -201,13 +201,32 @@ class LinearDiff[T] private(private[diff] override val source: Array[Line[T]],
   }
 }
 
+private class DefaultLinearDiff(source: Array[Line[String]],
+                                target: Array[Line[String]])
+  extends LinearDiff[String](source, target)
+
+private class MapBasedLinearDiff(source: Array[Line[Map[String, String]]],
+                                 target: Array[Line[Map[String, String]]],
+                                 override private[diff] val sourceHeaders: List[String] = Nil,
+                                 override private[diff] val targetHeaders: List[String] = Nil,
+                                 override private[diff] val headersToCompare: List[String] = Nil)
+  extends LinearDiff[Map[String, String]](source, target)
+    with MapBasedDiff
+
 object LinearDiff {
   def apply(source: Array[Line[String]], target: Array[Line[String]]): LinearDiff[String] =
-    new LinearDiff(source, target)
+    new DefaultLinearDiff(source, target)
 
   def apply(source: Array[String], target: Array[String]): LinearDiff[String] =
-    new LinearDiff(toLine(source), toLine(target))
+    new DefaultLinearDiff(toLine(source), toLine(target))
 
   def apply(source: String, target: String): LinearDiff[String] =
-    new LinearDiff(toStringArray(source), toStringArray(target))
+    new DefaultLinearDiff(toStringArray(source), toStringArray(target))
+
+  def apply(source: Array[Line[Map[String, String]]],
+            target: Array[Line[Map[String, String]]],
+            sourceHeaders: List[String] = Nil,
+            targetHeaders: List[String] = Nil,
+            headersToCompare: List[String] = Nil): LinearDiff[Map[String, String]] =
+    new MapBasedLinearDiff(source, target, sourceHeaders, targetHeaders, headersToCompare)
 }
