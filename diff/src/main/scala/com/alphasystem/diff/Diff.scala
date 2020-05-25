@@ -7,7 +7,7 @@ import org.slf4j.{Logger, LoggerFactory}
 trait Diff[T] {
 
   protected val log: Logger = LoggerFactory.getLogger(getClass)
-  private val logTimeConsumed: Boolean = java.lang.Boolean.getBoolean("scala-diff.log-time-consumed")
+  private val logTimeConsumed: Boolean = java.lang.Boolean.getBoolean(LogTimeConsumedPropertyName)
   private[diff] val source: Array[Line[T]]
   private[diff] val target: Array[Line[T]]
   private var snakes: List[Snake[T]] = List.empty[Snake[T]]

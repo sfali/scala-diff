@@ -4,6 +4,7 @@ package object diff {
 
   val NewLine: String = System.lineSeparator()
   val UserHome: String = System.getProperty("user.home")
+  val LogTimeConsumedPropertyName = "scala-diff.log-time-consumed"
 
   def toLine(source: Array[String]): Array[Line[String]] =
     source.zipWithIndex.map {

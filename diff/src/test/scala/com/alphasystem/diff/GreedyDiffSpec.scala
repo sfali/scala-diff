@@ -10,8 +10,8 @@ class GreedyDiffSpec
   extends AnyFlatSpec
     with Matchers {
 
-  System.setProperty("scala-diff.log-time-consumed", "true")
-  
+  System.setProperty(LogTimeConsumedPropertyName, "true")
+
   it should "find shortest edit script" in {
     val result = GreedyDiff("ABCABBA", "CBABAC").shortestEditPath
 
