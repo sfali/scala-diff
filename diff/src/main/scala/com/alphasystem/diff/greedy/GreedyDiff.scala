@@ -8,8 +8,8 @@ abstract class GreedyDiff[T] private[diff](private[diff] override val source: Ar
                                            private[diff] override val target: Array[Line[T]])
   extends Diff[T] {
 
-  override private[diff] def walkSnakes = {
-    var snakes = List.empty[Snake[T]]
+  private def findPaths: List[Point] = {
+    var paths: List[Point] = Nil
     val n = source.length
     val m = target.length
     val max = n + m
@@ -17,7 +17,6 @@ abstract class GreedyDiff[T] private[diff](private[diff] override val source: Ar
     // map holding -max to max "x" values, each key of this map is "k"
     var v = Map.empty[Int, Int].withDefaultValue(0)
 
-    var result = max
     breakable {
       for (d <- 0 to max) {
         for (k <- -d to d by 2) {
@@ -32,10 +31,8 @@ abstract class GreedyDiff[T] private[diff](private[diff] override val source: Ar
           var yEnd = xEnd - k
 
           while (xEnd < n && yEnd < m && compareLines(xEnd, yEnd)) {
-            val maybeSnake = createSnake(xStart, yStart, xEnd, yEnd, source, target)
-            if (maybeSnake.isDefined) {
-              snakes +:= maybeSnake.get
-            }
+            paths +:= Point(xStart, yStart)
+            paths +:= Point(xEnd, yEnd)
             xStart = xEnd
             yStart = yEnd
             xEnd += 1
@@ -43,43 +40,47 @@ abstract class GreedyDiff[T] private[diff](private[diff] override val source: Ar
           }
           // best value for k
           v += (k -> xEnd)
-          val maybeSnake = createSnake(xStart, yStart, xEnd, yEnd, source, target)
-          if (maybeSnake.isDefined) {
-            snakes +:= maybeSnake.get
-          }
+          paths +:= Point(xStart, yStart)
+          paths +:= Point(xEnd, yEnd)
           if (xEnd >= n && yEnd >= m) {
-            result = d
             break()
           }
 
         } // end of inner for loop
       } // end of outer for loop
     } // end of breakable
-    backtrack(snakes, Nil, None)
+    paths
   }
 
-  /*
- * Results are backward, start from bottom and go up
- */
+  override private[diff] def walkSnakes: List[Snake[T]] = walkSnakesInternal(findPaths.sliding(2, 2).toList, Nil, None)
+
   @scala.annotation.tailrec
-  private def backtrack(source: List[Snake[T]], result: List[Snake[T]], maybePrev: Option[Snake[T]]): List[Snake[T]] =
-    source match {
+  private def walkSnakesInternal(paths: List[List[Point]],
+                                 result: List[Snake[T]],
+                                 maybePrev: Option[Snake[T]]): List[Snake[T]] = {
+    paths match {
       case Nil => result
-      case head :: tail =>
+      case first :: tail =>
         maybePrev match {
           case None =>
-            backtrack(tail, head +: result, Some(head))
+            val start = first.last
+            val end = first.head
+            val snake = createSnake(start, end, source, target)
+            walkSnakesInternal(tail, snake +: result, Some(snake))
+
           case Some(prev) =>
+            val start = first.last
+            val end = first.head
             // fictitious (0, -1) ignore
-            if (head.start.y == -1 || prev.start != head.end) {
-              backtrack(tail, result, maybePrev)
-            } else {
+            if (start.y == -1 || prev.start != end) walkSnakesInternal(tail, result, maybePrev)
+            else {
               // one of our path
-              backtrack(tail, head +: result, Some(head))
+              val snake = createSnake(start, end, source, target)
+              walkSnakesInternal(tail, snake +: result, Some(snake))
             }
         }
     }
-
+  }
 }
 
 private class DefaultGreedyDiff(source: Array[Line[String]], target: Array[Line[String]])

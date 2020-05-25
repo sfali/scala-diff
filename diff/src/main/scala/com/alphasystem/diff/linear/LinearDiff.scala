@@ -182,7 +182,7 @@ abstract class LinearDiff[T] private[diff](private[diff] override val source: Ar
         (result, input) =>
           val start = input.head
           val end = input.last
-          result :+ createSnake(start.x, start.y, end.x, end.y, source, target).get
+          result :+ createSnake(start, end, source, target)
       }
   }
 
