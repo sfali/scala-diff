@@ -75,7 +75,7 @@ abstract class LinearDiff[T] private[diff](private[diff] override val source: Ar
               yEnd += 1
             }
 
-            log.debug("Forward: Box = {}, xStart = {}, yStart = {}, xEnd = {}, yEnd = {}",
+            log.trace("Forward: Box = {}, xStart = {}, yStart = {}, xEnd = {}, yEnd = {}",
               box, xStart, yStart, xEnd, yEnd)
             forwardV += (k -> xEnd)
 
@@ -99,7 +99,7 @@ abstract class LinearDiff[T] private[diff](private[diff] override val source: Ar
               yEnd -= 1
             }
 
-            log.debug(s"Reverse: Box = {}, xStart = {}, yStart = {}, xEnd = {}, yEnd = {}", box, xStart, yStart, xEnd, yEnd)
+            log.trace(s"Reverse: Box = {}, xStart = {}, yStart = {}, xEnd = {}, yEnd = {}", box, xStart, yStart, xEnd, yEnd)
             reverseV += (c -> yEnd)
 
             if (box.evenDelta && k >= -d && k <= d && xEnd <= forwardV(k)) {
@@ -115,7 +115,9 @@ abstract class LinearDiff[T] private[diff](private[diff] override val source: Ar
         } // end of for loop
       } // end of breakable
     }
-    log.debug("Middle snake = {}", result)
+    if (result.isDefined) {
+      log.debug("Middle snake = {}", result.get)
+    }
     result
   }
 

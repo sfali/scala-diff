@@ -36,7 +36,9 @@ trait Diff[T] {
 
   def lcs: List[Snake[T]] = {
     if (snakes.isEmpty) shortestEditPath
-    snakes.filter(_.operationType == OperationType.Matched)
+    time("Filter LCS") {
+      snakes.filter(_.operationType == OperationType.Matched)
+    }
   }
 
   /**
@@ -65,11 +67,14 @@ trait Diff[T] {
   }
 
   private def time[R](description: String)(block: => R): R = {
+    if (logTimeConsumed) log.info("Starting step '{}'", description)
     val start = System.nanoTime()
     val result = block
     val timeElapsed = Duration.ofNanos(System.nanoTime() - start)
-    if (logTimeConsumed)
-      log.info(s"${getClass.getSimpleName}: time taken to run '$description' = $timeElapsed", timeElapsed)
+    if (logTimeConsumed) {
+      log.info("{}: time taken to run step '{}': {}", getClass.getSimpleName, description, timeElapsed)
+      log.info("Done step '{}'", description)
+    }
     result
   }
 
