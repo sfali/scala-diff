@@ -34,10 +34,15 @@ trait Diff[T] {
     snakes
   }
 
-  def lcs: List[Snake[T]] = {
+  def lcs: List[Snake[T]] = diff(OperationType.Matched)
+
+  def diff(operationType: OperationType): List[Snake[T]] = {
+    if (OperationType.None == operationType) {
+      throw new IllegalArgumentException("Invalid operation type")
+    }
     if (snakes.isEmpty) shortestEditPath
-    time("Filter LCS") {
-      snakes.filter(_.operationType == OperationType.Matched)
+    time("Filter Diff") {
+      snakes.filter(_.operationType == operationType)
     }
   }
 
