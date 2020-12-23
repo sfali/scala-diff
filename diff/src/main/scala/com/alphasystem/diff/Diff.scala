@@ -51,9 +51,9 @@ trait Diff[T] {
    *
    * A solution can only be valid if one of the following condition is true:
    *
-   * #
-   * #
-   * #
+   *    1. For `Deletion` &mdash; Snake's start x + 1 == Snake's end x `AND`  Snake's start y == Snake's end y
+   *    1. For `Insertion` &mdsash; Snake's start x == Snake's end x `AND`  Snake's start y + 1 == Snake's end y
+   *    1. For `Matched` &mdash; Snake's start x + 1 == Snake's end x `AND`  Snake's start y + 1 == Snake's end y
    *
    * @return true if the given solution is valid, false otherwise.
    */
@@ -65,10 +65,10 @@ trait Diff[T] {
   private def validate(snake: Snake[T]): Boolean = {
     val start = snake.start
     val end = snake.end
-    val right = start.x + 1 == end.x && start.y == end.y
-    val down = start.x == end.x && start.y + 1 == end.y
-    val diagonal = start.x + 1 == end.x && start.y + 1 == end.y
-    right || down || diagonal
+    val deletion = start.x + 1 == end.x && start.y == end.y
+    val insertion = start.x == end.x && start.y + 1 == end.y
+    val matched = start.x + 1 == end.x && start.y + 1 == end.y
+    deletion || insertion || matched
   }
 
   private def time[R](description: String)(block: => R): R = {
