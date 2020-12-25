@@ -12,6 +12,7 @@ object Dependencies {
   private val ScalacheckVersion = "1.14.3"
   private val LogbackVersion = "1.2.3"
   private val ScoptVersion = "4.0.0-RC2"
+  private val ScalaTagsVersion = "0.9.2"
   private val ComTypesafeAkka = "com.typesafe.akka"
   private val ComLightbendAkka = "com.lightbend.akka"
   private val IoCirce = "io.circe"
@@ -20,6 +21,7 @@ object Dependencies {
   private val OrgScalacheck = "org.scalacheck"
   private val ChQosLogback = "ch.qos.logback"
   private val ComGithubScopt = "com.github.scopt"
+  private val ComLihaoyi = "com.lihaoyi"
 
   val Common = Seq(
     // These libraries are added to all modules via the `Common` AutoPlugin
@@ -48,7 +50,8 @@ object Dependencies {
 
   val Cli = Seq(
     libraryDependencies ++= Seq(
-      ComGithubScopt      %% "scopt"                      % ScoptVersion
+      ComGithubScopt      %% "scopt"                      % ScoptVersion,
+      ComLihaoyi          %% "scalatags"                  % ScalaTagsVersion
     )
   )
 }
