@@ -2,6 +2,7 @@ package com.alphasystem.diff.greedy
 
 import com.alphasystem.diff._
 
+import java.nio.file.Path
 import scala.util.control.Breaks._
 
 abstract class GreedyDiff[T] private[diff](private[diff] override val source: Array[Line[T]],
@@ -104,6 +105,8 @@ object GreedyDiff {
 
   def apply(source: String, target: String): GreedyDiff[String] =
     new DefaultGreedyDiff(toStringArray(source), toStringArray(target))
+
+  def apply(source: Path, target: Path): GreedyDiff[String] = GreedyDiff(readLines(source), readLines(target))
 
   def apply(source: Array[Line[Map[String, String]]],
             target: Array[Line[Map[String, String]]],

@@ -1,5 +1,9 @@
 package com.alphasystem
 
+import java.nio.file.{Files, Path}
+
+import scala.jdk.CollectionConverters._
+
 package object diff {
 
   val NewLine: String = System.lineSeparator()
@@ -20,6 +24,8 @@ package object diff {
     val operationType = OperationType.toOperationType(start, end)
     Snake(start, end, getLine(source, target, end, operationType), operationType)
   }
+
+  def readLines(path: Path): Array[Line[String]] = toLine((Files.readAllLines(path).asScala.toArray))
 
   private def getLine[T](source: Array[Line[T]],
                          target: Array[Line[T]],

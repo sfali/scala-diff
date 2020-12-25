@@ -1,8 +1,10 @@
 package com.alphasystem.diff
 
 import java.time.Duration
-
 import org.slf4j.{Logger, LoggerFactory}
+
+import java.nio.file.{Files, Paths}
+import scala.jdk.CollectionConverters._
 
 trait Diff[T] {
 
@@ -25,10 +27,12 @@ trait Diff[T] {
    * @return A list of [[Snake]]s containing the shortest edit path
    */
   def shortestEditPath: List[Snake[T]] = {
-    time("FindPaths") {
-      val paths = findPaths
-      time("WalkSnakes") {
-        snakes = walkSnakes(paths)
+    if (snakes.isEmpty) {
+      time("FindPaths") {
+        val paths = findPaths
+        time("WalkSnakes") {
+          snakes = walkSnakes(paths)
+        }
       }
     }
     snakes

@@ -2,6 +2,7 @@ package com.alphasystem.diff.linear
 
 import com.alphasystem.diff._
 
+import java.nio.file.Path
 import scala.util.control.Breaks._
 
 /**
@@ -222,6 +223,8 @@ object LinearDiff {
 
   def apply(source: String, target: String): LinearDiff[String] =
     new DefaultLinearDiff(toStringArray(source), toStringArray(target))
+
+  def apply(source: Path, target: Path): LinearDiff[String] = LinearDiff(readLines(source), readLines(target))
 
   def apply(source: Array[Line[Map[String, String]]],
             target: Array[Line[Map[String, String]]],
