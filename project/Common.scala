@@ -13,7 +13,7 @@ object Common extends AutoPlugin {
   		Seq (
   		organization := "com.alphasystem",
         organizationName := "AlphaSystem",
-        scalaVersion := "2.13.2",
+        scalaVersion := "2.13.4",
         scalacOptions ++= Seq(
           "-encoding",
           "UTF-8",
