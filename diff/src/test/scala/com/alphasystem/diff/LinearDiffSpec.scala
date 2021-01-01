@@ -107,5 +107,38 @@ class LinearDiffSpec
     } shouldBe "Andrew Airpump" :: "Aloysius Alfalfa" :: "Benny Franklin" :: "Cecil Noshow" :: Nil
   }
 
+  it should "Three way diff" in {
+    val user1Source = Array(
+      "1. celery",
+      "2. salmon",
+      "3. tomatoes",
+      "4. garlic",
+      "5. onions",
+      "6. wine"
+    )
+    val user2Source = Array(
+      "1. celery",
+      "2. salmon",
+      "3. garlic",
+      "4. onions",
+      "5. tomatoes",
+      "6. wine"
+    )
+    val originalSource = Array(
+      "1. celery",
+      "2. garlic",
+      "3. onions",
+      "4. salmon",
+      "5. tomatoes",
+      "6. wine"
+    )
+
+    val diff1 = LinearDiff(originalSource, user1Source).shortestEditPath
+    val diff2 = LinearDiff(originalSource, user2Source).shortestEditPath
+    diff1.foreach(println)
+    println("=" * 50)
+    diff2.foreach(println)
+  }
+
   private def mapSnakeToPoints[T](snakes: List[Snake[T]]): List[Point] = snakes.map(_.start)
 }

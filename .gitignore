@@ -6,15 +6,16 @@
 # IDEA
 .idea/**
 
+ui/js/**
+
 # test data
 datadir/
 
 null/**
 
 # sbt specific
-project/.sbtserver
-project/.sbtserver.lock
-.sbtserver
+**/.sbtserver
+**/.sbtserver.lock
 .cache
 .history
 .lib/
