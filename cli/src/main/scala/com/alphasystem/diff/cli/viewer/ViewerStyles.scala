@@ -1,7 +1,7 @@
 package com.alphasystem.diff.cli.viewer
 
-import CssSettings._
-import scalacss.internal.{FontFace, ValueT}
+import com.alphasystem.diff.cli.viewer.CssSettings._
+import scalacss.internal.ValueT
 
 object ViewerStyles extends StyleSheet.Inline {
 

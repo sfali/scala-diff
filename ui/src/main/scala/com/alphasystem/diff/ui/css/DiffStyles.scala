@@ -14,7 +14,7 @@ object DiffStyles extends StyleSheet.Inline {
 
   val table: StyleA = style(
     width(100 %%),
-    display.table,
+    //display.table,
     fontFamily(codeFont)
   )
 
@@ -27,13 +27,13 @@ object DiffStyles extends StyleSheet.Inline {
   )
 
   val deletion: StyleA = style(
-    tableRow,
+    //tableRow,
     backgroundColor(c"#FFEEF0"),
     color(c"#B31D28")
   )
 
   val insertion: StyleA = style(
-    tableRow,
+    //tableRow,
     backgroundColor(c"#F0FFF4"),
     color(c"#22863A")
   )

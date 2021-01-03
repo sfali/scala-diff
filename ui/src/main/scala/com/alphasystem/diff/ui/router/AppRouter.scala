@@ -2,7 +2,7 @@ package com.alphasystem.diff.ui.router
 
 import com.alphasystem.diff.ui.pages.HomePage
 import japgolly.scalajs.react.extra.router._
-import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.all._
 import org.scalajs.dom.html._
 
 object AppRouter {
@@ -16,15 +16,12 @@ object AppRouter {
       import dsl._
 
       (emptyRule
-        | staticRoute("/", HomeRoute) ~> renderR(HomePage(_))
+        | staticRoute("/", HomeRoute) ~> renderR(_ => HomePage())
         ).notFound(redirectToPage(HomeRoute)(SetRouteVia.HistoryReplace))
     }.renderWith(layout)
 
-  private def layout(c: RouterCtl[Page], r: Resolution[Page]): VdomTagOf[Div] = <.div(
-    <.div, // header
-    r.render(), // content
-    <.div // footer
-  )
+  private def layout(c: RouterCtl[Page], r: Resolution[Page]): VdomTagOf[Div] =
+    div(`class`:= "border")(r.render())
 
   private val baseUrl = BaseUrl.fromWindowOrigin
 
