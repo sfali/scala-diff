@@ -3,9 +3,6 @@ package com.alphasystem.diff
 import java.time.Duration
 import org.slf4j.{Logger, LoggerFactory}
 
-import java.nio.file.{Files, Paths}
-import scala.jdk.CollectionConverters._
-
 trait Diff[T] {
 
   protected val log: Logger = LoggerFactory.getLogger(getClass)

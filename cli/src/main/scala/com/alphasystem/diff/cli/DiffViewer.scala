@@ -10,11 +10,8 @@ object DiffViewer {
     "<!DOCTYPE html>" + html(lang := "en")(
       head(),
       body(
-        table(style :=
-          """border: none; border-collapse: collapse; table-layout: fixed; width: 100%;
-            |font-family: 'Courier New', 'monospace';""".stripMargin
-            .replaceAll(System.lineSeparator(), ""))(
-          tbody(
+        div(style := "width: 100%; display: table; font-family: 'Courier New', 'monospace'")(
+          div(style := "display: table-row-group; line-height: 20%;")(
             snakes.map {
               snake =>
                 snake.operationType match {
@@ -24,32 +21,32 @@ object DiffViewer {
                   case OperationType.None => displayNone(snake.line)
                 }
             }
-          ) // end of tbody
-        ) // end of table
+          ) // end of div (table body)
+        ) // end of div (table)
       ) // end of body
     ) // end of html
   }
 
   private def displayDeletion(line: Line[String]): Text.TypedTag[String] =
-    tr(style := "background-color: #FFEEF0; color: #B31D28;")(
-      td(style := "width: 2%;")(span("-")),
-      td(style := "width: 5%;")(span(pre(f"${line.lineNumber}%6d"))),
-      td(code(pre(line.text)))
+    div(style := "display: table-row; background-color: #FFEEF0; color: #B31D28;")(
+      div(style := "display: table-cell; width: 3%")(pre(f"${line.lineNumber}%6d")),
+      div(style := "display: table-cell; width: 2%")(span("- ")),
+      div(style := "display: table-cell")(span(code(pre(line.text))))
     )
 
   private def displayInsertion(line: Line[String]): Text.TypedTag[String] =
-    tr(style := "background-color: #F0FFF4; color: #22863A;")(
-      td(style := "width: 2%;")(span("+")),
-      td(style := "width: 5%;")(span(pre(f"${line.lineNumber}%6d"))),
-      td(code(pre(line.text)))
+    div(style := "display: table-row; background-color: #F0FFF4; color: #22863A;")(
+      div(style := "display: table-cell; width: 3%")(pre(f"${line.lineNumber}%6d")),
+      div(style := "display: table-cell; width: 2%")(span("+ ")),
+      div(style := "display: table-cell")(span(code(pre(line.text))))
     )
 
   private def displayMatched(line: Line[String]): Text.TypedTag[String] =
-    tr()(
-      td(style := "width: 2%;")(span(" ")),
-      td(style := "width: 5%;")(span(pre(f"${line.lineNumber}%6d"))),
-      td(code(pre(line.text)))
+    div(style := "display: table-row;")(
+      div(style := "display: table-cell; width: 3%")(pre(f"${line.lineNumber}%6d")),
+      div(style := "display: table-cell; width: 2%")(span("  ")),
+      div(style := "display: table-cell")(span(code(pre(line.text))))
     )
 
-  private def displayNone(line: Line[String]): Text.TypedTag[String] = tr(td(colspan := "3"))
+  private def displayNone(line: Line[String]): Text.TypedTag[String] = div(style := "display: table-row")
 }
