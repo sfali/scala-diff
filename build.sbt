@@ -1,10 +1,14 @@
 import Dependencies._
 
-lazy val diff = createProject("diff", "diff")
+lazy val diffP = crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("diff")
+
+lazy val diffJvm = diffP.jvm.settings(name := "diff", moduleName := "diff")
+
+lazy val diffJs = diffP.js.settings(name := "diffJs", moduleName := "diffJs")
 
 lazy val client = createProject("client", "client", Seq(Client))
-  .aggregate(diff)
-  .dependsOn(diff)
+  .aggregate(diffJvm)
+  .dependsOn(diffJvm)
 
 lazy val cli = createProject("cli", "cli", Seq(Cli))
   .aggregate(client)
@@ -12,8 +16,8 @@ lazy val cli = createProject("cli", "cli", Seq(Cli))
 
 lazy val ui = createProject("ui", "ui", Seq(UI),
   Seq(ScalablyTypedConverterPlugin))
-  .aggregate(diff)
-  .dependsOn(diff)
+  .aggregate(diffJs)
+  .dependsOn(diffJs)
   .settings(
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= {
@@ -29,7 +33,7 @@ lazy val ui = createProject("ui", "ui", Seq(UI),
     skip in publish := true
   )
 
-lazy val modules: Seq[ProjectReference] = Seq(diff, client, cli, ui)
+lazy val modules = Seq(diffJvm, diffJs, client, cli, ui).map(Project.projectToRef)
 
 lazy val `scala-diff` = project
   .in(file("."))

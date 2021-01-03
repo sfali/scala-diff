@@ -9,8 +9,8 @@ object Dependencies {
   private val AkkaVersion = "2.6.5"
   private val AlpakkaVersion = "2.0.0"
   private val CirceVersion = "0.13.0"
-  private val EnumeratumVersion = "1.5.15"
-  private val EnumeratumCirceVersion = "1.5.23"
+  private val EnumeratumVersion = "1.6.1"
+  private val EnumeratumCirceVersion = "1.6.1"
   private val ScalatestVersion = "3.3.0-SNAP2"
   private val ScalacheckVersion = "1.14.3"
   private val LogbackVersion = "1.2.3"
@@ -37,11 +37,11 @@ object Dependencies {
   val Common = Seq(
     // These libraries are added to all modules via the `Common` AutoPlugin
     libraryDependencies ++= Seq(
-      IoCirce             %% "circe-core"                 % CirceVersion,
-      IoCirce             %% "circe-generic"              % CirceVersion,
-      IoCirce             %% "circe-parser"               % CirceVersion,
-      ComBeachape         %% "enumeratum"                 % EnumeratumVersion,
-      ComBeachape         %% "enumeratum-circe"           % EnumeratumCirceVersion,
+      IoCirce             %%% "circe-core"                 % CirceVersion,
+      IoCirce             %%% "circe-generic"              % CirceVersion,
+      IoCirce             %%% "circe-parser"               % CirceVersion,
+      ComBeachape         %%% "enumeratum"                 % EnumeratumVersion,
+      ComBeachape         %%% "enumeratum-circe"           % EnumeratumCirceVersion,
       ChQosLogback        %  "logback-classic"            % LogbackVersion,
       OrgScalatest        %% "scalatest"                  % ScalatestVersion         % Test,
       OrgScalacheck       %% "scalacheck"                 % ScalacheckVersion        % Test
@@ -86,8 +86,5 @@ object Dependencies {
       "@types/react-dom" -> TypeReactVersion
     )
   )
-
-
-
 
 }
